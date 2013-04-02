@@ -28,7 +28,7 @@ cd ~/.config/sublime-text-2/Packages/
 
 OS-X:
 ```bash
-cd ~/Library/Application\ Support/Sublime\ Text\ 	2/Packages/
+cd ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/
 ```
 
 Windows ([git-bash](http://git-scm.com/)):
