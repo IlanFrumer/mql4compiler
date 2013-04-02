@@ -8,8 +8,6 @@ METALANG = 'metalang.exe'
 ## todos:
 
 ## on error: open log on new window
-## check includes / imports
-
 
 class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
@@ -59,6 +57,8 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
         log_lines = re.split('\n',output)
 
+        group_files = []
+
         for l in log_lines :
 
             line = l.strip()
@@ -69,7 +69,14 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
             line_arr = re.split(';',line)            
             line_len = len(line_arr)
 
-            if line_len == 1 :
+            if line_len < 5 :
                 print line
             if line_len == 5 : 
+                fpath = line_arr[2].split("\\")[-1]
+                if not fpath in group_files:
+                    group_files.append(fpath)
+                    print "-----------------------"
+                    print "file: {0}".format(fpath)
+
+
                 print "line {0} | {1}".format(line_arr[3],line_arr[4])
