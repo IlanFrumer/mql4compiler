@@ -3,12 +3,10 @@ import os
 import subprocess
 import re
 
-METALANG_PATH = '/mql4compiler/metalang.exe'
-
+METALANG = 'metalang.exe'
 
 ## todos:
 
-## relative path : metalang
 ## on error: open log on new window
 ## check includes / imports
 
@@ -18,7 +16,8 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
     def run(self , edit):
         view = self.view
 
-        metalang_path = sublime.packages_path() + METALANG_PATH
+        path = os.path.dirname(os.path.realpath(__file__))
+        metalang_path = os.path.join  (path , METALANG)
         fn = view.file_name()
         dirname  = os.path.realpath(os.path.dirname(fn))
         filename = os.path.basename(fn)        
