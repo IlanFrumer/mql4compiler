@@ -8,6 +8,7 @@ METALANG_PATH = '/mql4compiler/metalang.exe'
 
 ## todos:
 
+## relative path : metalang
 ## on error: open log on new window
 ## check includes / imports
 
