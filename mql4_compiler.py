@@ -8,19 +8,28 @@ METALANG_PATH = '/mql4compiler/metalang.exe'
 
 ## todos:
 
-## check extension
-## open error window log
-## print on success
+## on error: open log on new window
+## check includes / imports
 
 
 class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
     def run(self , edit):
         view = self.view
+
+        metalang_path = sublime.packages_path() + METALANG_PATH
         fn = view.file_name()
         dirname  = os.path.realpath(os.path.dirname(fn))
-        filename = os.path.basename(fn)
-        metalang_path = sublime.packages_path() + METALANG_PATH
+        filename = os.path.basename(fn)        
+        extension = os.path.splitext(filename)[1]
+
+        if extension != ".mq4":
+            print "Mqlcompiler | error: wrong file extension: ({0})".format(extension)
+            return
+
+        if view.is_dirty():
+            print "Mqlcompiler | error: Save File before compiling"
+            return
 
         command = [metalang_path,filename]
 
@@ -50,8 +59,17 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
         log_lines = re.split('\n',output)
 
-        for line in log_lines :          
-            line_arr = re.split(';',line)            
+        for l in log_lines :
 
-            if len(line_arr) is 5 : 
+            line = l.strip()
+
+            if not line:
+                continue
+
+            line_arr = re.split(';',line)            
+            line_len = len(line_arr)
+
+            if line_len == 1 :
+                print line
+            if line_len == 5 : 
                 print "line {0} | {1}".format(line_arr[3],line_arr[4])
