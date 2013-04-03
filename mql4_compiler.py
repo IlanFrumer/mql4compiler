@@ -45,13 +45,13 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
         # hide pop-up window on windows
 
-        if PLATFORM is 'windows':
+        if PLATFORM == 'windows':
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # executing exe files with wine on mac / linux
 
-        if PLATFORM is not 'windows':
+        if PLATFORM != 'windows':
             command.insert(0,'wine')
 
         # execution:
