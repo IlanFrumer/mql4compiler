@@ -53,6 +53,10 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         # executing exe files with wine on mac / linux
 
         if PLATFORM != 'windows':
+            if not os.path.exists(WINE_PATH):
+                print "Mqlcompiler | error: wine not found ({0})".format(WINE_PATH)
+                return
+
             command.insert(0,WINE_PATH)
 
         # execution:
