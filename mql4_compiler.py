@@ -5,6 +5,8 @@ import re
 
 PLATFORM = sublime.platform()
 METALANG = 'metalang.exe'
+PLUGIN_FOLDER = "mql4compiler"
+
 ## todos:
 
 ## on error: open log on new window
@@ -15,22 +17,26 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         view = self.view
         file_path = view.file_name()
 
+        metalang_path = os.path.join  (sublime.packages_path(), PLUGIN_FOLDER , METALANG)
+
+        if not os.path.exists(metalang_path):
+            print "Mqlcompiler | error: metalang.exe not found"
+            return
+    
         if not file_path :
             print "Mqlcompiler | error: Buffer has to be saved first"
             return
 
-        if view.is_dirty():
-            print "Mqlcompiler | error: Save File before compiling"
-            return
-
-        path = os.path.dirname(os.path.abspath(__file__))
-        metalang_path = os.path.join  (path , METALANG)
         dirname  = os.path.realpath(os.path.dirname(file_path))
         filename = os.path.basename(file_path)        
         extension = os.path.splitext(filename)[1]
 
         if extension != ".mq4":
             print "Mqlcompiler | error: wrong file extension: ({0})".format(extension)
+            return
+
+        if view.is_dirty():
+            print "Mqlcompiler | error: Save File before compiling"
             return
 
         command = [metalang_path,filename]
@@ -59,10 +65,12 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
         ## format error log:
 
+        print "======================="
+
         log_lines = re.split('\n',output)
 
         group_files = []
-
+        
         for l in log_lines :
 
             line = l.strip()
