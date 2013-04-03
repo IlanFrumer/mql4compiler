@@ -37,14 +37,13 @@ Windows ([git-bash](http://git-scm.com/)):
 ```
 
 ## Installation
+* goto sublime folder , then:
 ```bash
 git clone https://github.com/IlanFrumer/mql4compiler.git
 ```
 
 ## Update 
-
-First goto sublime folder , then:
-
+* goto sublime folder , then:
 ```bash
 cd mql4compiler/
 git pull

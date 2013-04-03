@@ -3,8 +3,8 @@ import os
 import subprocess
 import re
 
+PLATFORM = sublime.platform()
 METALANG = 'metalang.exe'
-
 ## todos:
 
 ## on error: open log on new window
@@ -13,20 +13,24 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
     def run(self , edit):
         view = self.view
+        file_path = view.file_name()
 
-        path = os.path.dirname(os.path.realpath(__file__))
-        metalang_path = os.path.join  (path , METALANG)
-        fn = view.file_name()
-        dirname  = os.path.realpath(os.path.dirname(fn))
-        filename = os.path.basename(fn)        
-        extension = os.path.splitext(filename)[1]
-
-        if extension != ".mq4":
-            print "Mqlcompiler | error: wrong file extension: ({0})".format(extension)
+        if not file_path :
+            print "Mqlcompiler | error: Buffer has to be saved first"
             return
 
         if view.is_dirty():
             print "Mqlcompiler | error: Save File before compiling"
+            return
+
+        path = os.path.dirname(os.path.abspath(__file__))
+        metalang_path = os.path.join  (path , METALANG)
+        dirname  = os.path.realpath(os.path.dirname(file_path))
+        filename = os.path.basename(file_path)        
+        extension = os.path.splitext(filename)[1]
+
+        if extension != ".mq4":
+            print "Mqlcompiler | error: wrong file extension: ({0})".format(extension)
             return
 
         command = [metalang_path,filename]
@@ -35,13 +39,13 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
         # hide pop-up window on windows
 
-        if os.name is 'nt':
+        if PLATFORM is 'windows':
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # executing exe files with wine on mac / linux
 
-        if os.name is 'posix':
+        if PLATFORM is not 'windows':
             command.insert(0,'wine')
 
         # execution:
