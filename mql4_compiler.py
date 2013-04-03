@@ -6,6 +6,7 @@ import re
 PLATFORM = sublime.platform()
 METALANG = 'metalang.exe'
 PLUGIN_FOLDER = "mql4compiler"
+WINE_PATH = '/usr/bin/wine'
 
 ## todos:
 
@@ -52,7 +53,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         # executing exe files with wine on mac / linux
 
         if PLATFORM != 'windows':
-            command.insert(0,'wine')
+            command.insert(0,WINE_PATH)
 
         # execution:
 
