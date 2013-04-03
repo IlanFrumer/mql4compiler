@@ -6,11 +6,16 @@ import re
 PLATFORM = sublime.platform()
 METALANG = 'metalang.exe'
 PLUGIN_FOLDER = "mql4compiler"
-WINE_PATH = '/usr/bin/wine'
 
-## todos:
+# function needed to find wine location
 
-## on error: open log on new window
+def which(file):
+    for path in os.environ["PATH"].split(":"):
+        if os.path.exists(path + "/" + file):
+                return path + "/" + file
+
+    return None
+
 
 class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
@@ -53,11 +58,12 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         # executing exe files with wine on mac / linux
 
         if PLATFORM != 'windows':
-            if not os.path.exists(WINE_PATH):
-                print "Mqlcompiler | error: wine not found ({0})".format(WINE_PATH)
+            wine_path = which('wine')
+            if not wine_path :
+                print "Mqlcompiler | error: wine is not installed"
                 return
 
-            command.insert(0,WINE_PATH)
+            command.insert(0,wine_path)
 
         # execution:
 
