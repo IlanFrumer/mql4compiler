@@ -13,6 +13,15 @@ PLUGIN_FOLDER = '%s/' % os.path.basename(BASE_PATH)
 METALANG_PATH = os.path.join  (sublime.packages_path(), PLUGIN_FOLDER , METALANG)
 
 def which(file):
+
+    manual_path = os.path.join("/usr/bin", file)
+    if os.path.exists(manual_path):
+        return manual_path
+
+    manual_path = os.path.join("/usr/local/bin", file)
+    if os.path.exists(manual_path):
+        return manual_path
+
     for dir in os.environ['PATH'].split(os.pathsep):
         path = os.path.join(dir, file)
         if os.path.exists(path):
