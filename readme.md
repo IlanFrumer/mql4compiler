@@ -3,7 +3,6 @@
 **Default key** : ctrl + alt + m
 
 * Tested on windows and on linux through wine.
-* make sure your plugin folder is named 'mql4compiler'
 * please inform me if there are any issues.
 * fork & pull request me !
 
