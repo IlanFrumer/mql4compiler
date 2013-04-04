@@ -2,7 +2,7 @@
 
 **Default key** : ctrl + alt + m
 
-* Tested on windows and on linux through wine.
+* Tested on windows / linux / mac !
 * please inform me if there are any issues.
 * fork & pull request me !
 
@@ -38,12 +38,14 @@ Windows ([git-bash](http://git-scm.com/)):
 
 ## Installation
 * goto sublime folder , then:
+
 ```bash
 git clone https://github.com/IlanFrumer/mql4compiler.git
 ```
 
 ## Update 
 * goto sublime folder , then:
+
 ```bash
 cd mql4compiler/
 git pull
