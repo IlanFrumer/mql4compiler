@@ -3,6 +3,8 @@ import os
 import subprocess
 import re
 
+import sys
+
 PLATFORM = sublime.platform()
 METALANG = 'metalang.exe'
 EXTENSION = '.mq4'
@@ -27,7 +29,7 @@ def which(file):
         if os.path.exists(path):
             return path
 
-    print "PATH = {0}".format(os.environ['PATH'])
+    print ("PATH = {0}".format(os.environ['PATH']))
     return None
 
 
@@ -36,9 +38,10 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
     def init(self):
         view = self.view
 
-        self.dirname   = os.path.realpath(os.path.dirname(view.file_name()))
-        self.filename  = os.path.basename(view.file_name())
-        self.extension = os.path.splitext(self.filename)[1]
+        if view.file_name() is not None :
+            self.dirname   = os.path.realpath(os.path.dirname(view.file_name()))
+            self.filename  = os.path.basename(view.file_name())
+            self.extension = os.path.splitext(self.filename)[1]
 
         if PLATFORM != 'windows':
             self.wine_path = which(WINE)
@@ -48,27 +51,28 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         iserror = False
 
         if not os.path.exists(METALANG_PATH):
-            print METALANG_PATH # Debug
-            print "Mqlcompiler | error: metalang.exe not found"
-            iserror = True
-
-        if not self.view.file_name() :
-            # check if console..
-            print "Mqlcompiler | error: Buffer has to be saved first"
-            iserror = True
-
-        if self.extension != EXTENSION:
-            print "Mqlcompiler | error: wrong file extension: ({0})". \
-            format(self.extension)
-            iserror = True
-
-        if self.view.is_dirty():
-            print "Mqlcompiler | error: Save File before compiling"
+            print (METALANG_PATH) # Debug
+            print ("Mqlcompiler | error: metalang.exe not found")
             iserror = True
 
         if PLATFORM != 'windows':
             if not self.wine_path :
-                print "Mqlcompiler | error: wine is not installed"
+                print ("Mqlcompiler | error: wine is not installed")
+                iserror = True            
+
+        if self.view.file_name() is None :
+            # check if console..
+            print ("Mqlcompiler | error: Buffer has to be saved first")
+            iserror = True
+
+        else :
+
+            if self.extension != EXTENSION:
+                print ("Mqlcompiler | error: wrong file extension: ({0})".format(self.extension))   
+                iserror = True
+
+            if self.view.is_dirty():
+                print ("Mqlcompiler | error: Save File before compiling")
                 iserror = True
 
         return iserror
@@ -139,13 +143,13 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
 
     def newLogWindow(self, output):
-        view = self.view
+        window = self.view.window()
 
-        new_view = view.window().new_file()
-        new_view.set_scratch(True)
-        new_edit = new_view.begin_edit()
-        new_view.insert(new_edit, 0, output)
-        new_view.end_edit(new_edit)
+        new_view = window.create_output_panel("mql4log")
+        new_view.run_command('erase_view')
+        new_view.run_command('append', {'characters': output})
+        window.run_command("show_panel", {"panel": "output.mql4log"})
+
         sublime.status_message('Metalang')
 
         pass
@@ -157,6 +161,6 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
             return
 
         stdout = self.runMetalang()
+        stdout = stdout.decode(encoding='UTF-8')
         output = self.formatOutput(stdout)
-
         self.newLogWindow(output)
