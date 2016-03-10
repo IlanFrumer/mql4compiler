@@ -11,7 +11,6 @@ EXTENSION     = '.mq4'
 WINE          = 'wine'
 
 BASE_PATH     = os.path.abspath(os.path.dirname(__file__))
-PLUGIN_FOLDER = '%s/' % os.path.basename(BASE_PATH)
 METALANG_PATH = os.path.join(BASE_PATH, METALANG)
 
 def which(file):
