@@ -5,14 +5,14 @@ import re
 
 import sys
 
-PLATFORM = sublime.platform()
-METALANG = 'metalang.exe'
-EXTENSION = '.mq4'
-WINE = 'wine'
+PLATFORM      = sublime.platform()
+METALANG      = 'metalang.exe'
+EXTENSION     = '.mq4'
+WINE          = 'wine'
 
-BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+BASE_PATH     = os.path.abspath(os.path.dirname(__file__))
 PLUGIN_FOLDER = '%s/' % os.path.basename(BASE_PATH)
-METALANG_PATH = os.path.join  (sublime.packages_path(), PLUGIN_FOLDER , METALANG)
+METALANG_PATH = os.path.join(BASE_PATH, METALANG)
 
 def which(file):
 
@@ -58,7 +58,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         if PLATFORM != 'windows':
             if not self.wine_path :
                 print ("Mqlcompiler | error: wine is not installed")
-                iserror = True            
+                iserror = True
 
         if self.view.file_name() is None :
             # check if console..
@@ -68,7 +68,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         else :
 
             if self.extension != EXTENSION:
-                print ("Mqlcompiler | error: wrong file extension: ({0})".format(self.extension))   
+                print ("Mqlcompiler | error: wrong file extension: ({0})".format(self.extension))
                 iserror = True
 
             if self.view.is_dirty():
@@ -93,12 +93,12 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
             command.insert(0,self.wine_path)
 
         # execution:
-        proc = subprocess.Popen(command, 
+        proc = subprocess.Popen(command,
         cwd= self.dirname,
         stdout=subprocess.PIPE,
         shell=False,
         startupinfo=startupinfo)
-        
+
         return proc.stdout.read()
 
     def formatOutput(self , stdout):
@@ -106,7 +106,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         output = ""
         log_lines = re.split('\n',stdout)
         group_files = []
-        
+
         for l in log_lines :
 
             line = l.strip()
@@ -114,7 +114,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
             if not line:
                 continue
 
-            line_arr = re.split(';',line)            
+            line_arr = re.split(';',line)
             line_len = len(line_arr)
 
             if line_len < 5 :
@@ -124,7 +124,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
 
                 output+= line + "\n"
 
-            if line_len == 5 : 
+            if line_len == 5 :
                 fpath = line_arr[2].split("\\")[-1]
 
                 if fpath and not fpath in group_files:
@@ -155,7 +155,7 @@ class Mql4CompilerCommand(sublime_plugin.TextCommand):
         pass
 
     def run(self , edit):
-        
+
         self.init()
         if self.isError():
             return
